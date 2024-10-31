@@ -1,0 +1,43 @@
+name: Deploy CDK Stack
+
+on:
+  push:
+    branches:
+      - stage
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Python dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk
+
+      - name: Deploy CDK Stack
+        env:
+          AWS_REGION: us-east-1
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/stage" ]; then
+            cdk deploy CdkEmailParserStack-Stage -c env_name=stage --require-approval never
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            cdk deploy CdkEmailParserStack-Prod -c env_name=prod --require-approval never
+          fi
