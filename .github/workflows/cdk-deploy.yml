@@ -11,23 +11,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the code
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
+      # Set up Node.js (required by CDK)
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/checkout@v4
         with:
-          node-version: '14'
+          node-version: '18'
 
+      # Set up Python and install dependencies
       - name: Install Python dependencies
         run: |
           python -m venv .venv
           source .venv/bin/activate
           pip install -r requirements.txt
 
+      # Install AWS CDK globally
       - name: Install AWS CDK
         run: npm install -g aws-cdk
 
+      # Deploy based on branch
       - name: Deploy CDK Stack
         env:
           AWS_REGION: us-east-1
