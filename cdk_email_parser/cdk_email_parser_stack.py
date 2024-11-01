@@ -125,7 +125,7 @@ class CdkEmailParserStack(Stack):
         cron_rule = events.Rule(self, "StepFunctionCronRule",
             schedule=events.Schedule.cron(
                 minute="0",
-                hour="12",      # 12:00 UTC
+                hour="15",      # 12:00 UTC
                 day="*",       # every day
                 month="*",     # every month
                 year="*"       # every year
