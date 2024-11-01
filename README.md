@@ -1,58 +1,78 @@
 
-# Welcome to your CDK Python project!
+# cdk-email-parser
 
-This is a blank project for CDK development with Python.
+`cdk-email-parser` is an AWS CDK (Cloud Development Kit) project designed to deploy an infrastructure for parsing emails using Lambda functions, Step Functions, S3 storage, and EventBridge scheduling. This setup is ideal for applications that process and analyze email data within a serverless architecture on AWS.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Table of Contents
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+- [Project Overview](#project-overview)
+- [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
+- [Setup and Deployment](#setup-and-deployment)
+- [GitHub Actions CI/CD](#github-actions-cicd)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
 
-To manually create a virtualenv on MacOS and Linux:
+## Project Overview
 
+This project uses AWS CDK to automate the deployment of serverless resources to AWS, enabling a scalable and efficient email parsing service. The service includes:
+- **Lambda Functions**: One for feeding data into a Step Function, and another for parsing emails.
+- **Step Functions**: Used to orchestrate and process tasks as part of the email parsing workflow.
+- **S3 Bucket**: To store email data and any intermediate results.
+- **EventBridge Rule**: To trigger the Lambda function on a defined schedule.
+
+## Architecture
+
+The following AWS resources are deployed by this project:
+- **S3 Bucket**: Used to store email files and any related assets.
+- **Lambda Functions**:
+  - `EmailParserFunction`: Parses email data and processes it as needed.
+  - `EmailParserFeederFunction`: Triggers the state machine to start processing.
+- **Step Functions**: A state machine that orchestrates the parsing process.
+- **EventBridge Rule**: A cron-based rule to schedule the feeder function to run periodically.
+
+## Prerequisites
+
+- **AWS Account**: You need an AWS account to deploy the resources.
+- **Node.js**: Ensure Node.js is installed (recommended version 18.x).
+- **AWS CDK**: Install the AWS CDK globally: `npm install -g aws-cdk`
+- **Python 3.8+**: Required for Lambda functions and CDK Python dependencies.
+
+## Setup and Deployment
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/cdk-email-parser.git
+cd cdk-email-parser
 ```
-$ python3 -m venv .venv
+
+### 2. Install Dependencies
+Set up the Python environment and install dependencies:
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows, use .venv\Scripts\activate
+pip install -r requirements.txt
 ```
+### 3. Configure AWS Credentials
+Ensure your AWS credentials are configured. You can use aws configure or set up a profile as described in the [AWS CLI documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html).  
 
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
-
+### 4. Define Environment Context in cdk.json
+In cdk.json, specify environment-specific variables under the context key, such as bucket_name for different environments:
+```json
+{
+  "context": {
+    "env": {
+      "stage": {
+        "bucket_name": "your-stage-bucket-name"
+      },
+      "prod": {
+        "bucket_name": "your-prod-bucket-name"
+      }
+    }
+  }
+}
 ```
-$ source .venv/bin/activate
-```
-
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
-```
-
-Once the virtualenv is activated, you can install the required dependencies.
-
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
-```
-
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
+to be continued ...
