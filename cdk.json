@@ -11,7 +11,8 @@
       "source.bat",
       "**/__init__.py",
       "**/__pycache__",
-      "tests"
+      "tests",
+      "emailParserStateMachine.asl.yaml"
     ]
   },
   "context": {
@@ -72,6 +73,17 @@
     "@aws-cdk/aws-rds:setCorrectValueForDatabaseInstanceReadReplicaInstanceResourceId": true,
     "@aws-cdk/core:cfnIncludeRejectComplexResourceUpdateCreatePolicyIntrinsics": true,
     "@aws-cdk/aws-lambda-nodejs:sdkV3ExcludeSmithyPackages": true,
-    "@aws-cdk/aws-stepfunctions-tasks:fixRunEcsTaskPolicy": true
+    "@aws-cdk/aws-stepfunctions-tasks:fixRunEcsTaskPolicy": true,
+
+    "env": {
+      "prod": {
+
+        "bucket_name": "bergena-email-parser-prod"
+
+      },
+      "stage": {
+        "bucket_name": "bergena-email-parser-stage"
+      }
+    }
   }
 }
