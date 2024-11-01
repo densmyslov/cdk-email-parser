@@ -1,6 +1,5 @@
 name: Deploy CDK Stack
 
-
 ##########################################################################################################
 ####                                BRANCHES TO DEPLOY TO
 ####        however, the filters in the last section select which branches to deploy to
@@ -29,7 +28,7 @@ jobs:
 
       # Set up Node.js (required by CDK)
       - name: Set up Node.js
-        uses: actions/checkout@v4
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
 
@@ -44,13 +43,13 @@ jobs:
       - name: Install AWS CDK
         run: npm install -g aws-cdk
 
-##########################################################################################################
-#####                   SECRETS FOR AWS CREDENTIALS
-#####       secrets need to be created in the github repository
-#####       https://docs.github.com/en/actions/security-guides/encrypted-secrets
-##### https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository
+      ##########################################################################################################
+      #####                   SECRETS FOR AWS CREDENTIALS
+      #####       secrets need to be created in the github repository
+      #####       https://docs.github.com/en/actions/security-guides/encrypted-secrets
+      ##### https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository
 
-##########################################################################################################
+      ##########################################################################################################
       - name: Deploy CDK Stack
         env:
           AWS_REGION: us-east-1
@@ -58,15 +57,9 @@ jobs:
           CDK_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-##########################################################################################################
-#####                   LOGIC TO DEPLOY STACKS BASED ON BRANCH NAME
-#####       if branch is stage, deploy stage stack, if branch is main, deploy prod stack
-
-##########################################################################################################
         run: |
           if [ "${{ github.ref }}" == "refs/heads/stage" ]; then
-            cdk deploy CdkEmailParserStack-Stage -c env_name=stage --require-approval never
+            cdk deploy CdkEmailParserStack-Stage -c env_name=stage --require-approval never --force
           elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            cdk deploy CdkEmailParserStack-Prod -c env_name=prod --require-approval never
+            cdk deploy CdkEmailParserStack-Prod -c env_name=prod --require-approval never --force
           fi
