@@ -20,9 +20,10 @@ s3_client = boto3.client('s3')
 def lambda_handler(event, context):
     # TODO implement
     
-    # print(event)
+    print(event)
     # event is passed from invPar-email-parser-feeder
     client_email = event[0]
+    print(f"client_email: {client_email}")
     client_id = event[1]
     service_email = event[2]
     email_key = event[3]
