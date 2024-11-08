@@ -44,9 +44,10 @@ class CdkEmailParserStack(Stack):
         )
 
         # Lambda layer from default layer
+        pandas_layer_arn = env_config.get("pandas_layer_arn")
         pandas_layer = _lambda.LayerVersion.from_layer_version_arn(
             self, "AWSSDKPandas-Python312",
-            layer_version_arn="arn:aws:lambda:us-east-2:336392948345:layer:AWSSDKPandas-Python312:13"
+            layer_version_arn = pandas_layer_arn
         )
 
         # Define the Lambda function invoked within the Step Function
